@@ -1,13 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  template: `<price-consultation></price-consultation>`,
 })
-export class AppComponent {
-  title = 'consulta-precios-sap-sl';
-}
+export class AppComponent {}

@@ -1,27 +1,54 @@
-# ConsultaPreciosSapSl
+# Consulta de precios SAP-SF
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.11.
+Este proyecto permite consultar y actualizar precios entre los sistemas SAP y Salesforce. Proporciona una interfaz intuitiva para que los usuarios puedan comparar precios y, si es necesario, actualizar los datos en Salesforce con base en la información de SAP.
 
-## Development server
+## Características principales
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Consulta de precios desde SAP y Salesforce.
+- Actualización de precios incorrectos en Salesforce.
+- Sincronización automática al presionar un botón.
+- Comparación visual de precios en la interfaz de usuario.
 
-## Code scaffolding
+---
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Tecnologías utilizadas
 
-## Build
+### Frontend
+- **Angular**: Framework para la creación de una interfaz de usuario dinámica.
+- **TypeScript**: Tipado estático para mayor seguridad y escalabilidad.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+## Requisitos previos
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1. **Node.js** y **Angular CLI** instalados.
+2. **Servidor PHP local**: Configurado con acceso al archivo `api.php`.
+3. **MySQL**: Base de datos configurada con las tablas:
+   - `NT_SAP`
+   - `ITM1`
+4. **Configuración del servidor local**:
+   - Servidor: `10.57.1.163`
 
-## Running end-to-end tests
+---
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Instalación y configuración
 
-## Further help
+### Frontend
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. Instala las dependencias del proyecto Angular:
+   ```bash
+   npm install
+   ```
+2. Inicia el servidor de desarrollo:
+   ```bash
+   ng serve
+   ```
+3. Accede a la aplicación en tu navegador:
+   ```
+   http://localhost:4200
+   ```
+
+---
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT. Puedes usarlo y modificarlo libremente, siempre y cuando menciones al autor original.

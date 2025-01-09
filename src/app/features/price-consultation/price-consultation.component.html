@@ -1,0 +1,93 @@
+<div class="container">
+  <div class="container__logo"></div>
+  <h2 class="container__title">Consulta y Actualización de Precios SAP-SF</h2>
+
+  <form [formGroup]="priceForm">
+    <label for="itemCode">Artículo (Item Code)</label>
+    <input
+      id="itemCode"
+      type="text"
+      formControlName="itemCode"
+      placeholder="Ejemplo: ABC123"
+    />
+    <div
+      *ngIf="
+        priceForm.get('itemCode')?.invalid && priceForm.get('itemCode')?.touched
+      "
+      class="error"
+    >
+      El código es obligatorio.
+    </div>
+
+    <label for="priceList">Lista de Precios</label>
+    <input
+      id="priceList"
+      type="number"
+      formControlName="priceList"
+      placeholder="Ejemplo: 100"
+    />
+    <div
+      *ngIf="
+        priceForm.get('priceList')?.invalid &&
+        priceForm.get('priceList')?.touched
+      "
+      class="error"
+    >
+      La lista de precios debe ser un número.
+    </div>
+
+    <label for="newPrice">Precio a Actualizar</label>
+    <input
+      id="newPrice"
+      type="number"
+      step="0.0001"
+      formControlName="newPrice"
+      placeholder="Ejemplo: 99.9999"
+    />
+    <div
+      *ngIf="
+        priceForm.get('newPrice')?.invalid && priceForm.get('newPrice')?.touched
+      "
+      class="error"
+    >
+      El precio debe ser un número válido tiene permitido hasta 4 decimales.
+    </div>
+
+    <div style="display: flex; justify-content: space-between; gap: 10px">
+      <button
+        type="button"
+        [disabled]="priceForm.invalid || loading"
+        (click)="onConsult()"
+      >
+        Consultar Precio en SAP
+      </button>
+      <button
+        type="button"
+        [disabled]="priceForm.invalid || loading || isSynchronized()"
+        (click)="onUpdateJob()"
+      >
+        Actualizar Precio en Salesforce
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="loading" class="loading">Cargando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="comparisonResult" class="success">
+    <h3>Resultado:</h3>
+    <p><strong>Artículo:</strong> {{ comparisonResult.itemCode }}</p>
+    <p>
+      <strong>Precio en SAP:</strong>
+      {{ comparisonResult.sap.price | number : "1.4-4" }}
+    </p>
+    <p>
+      <strong>Precio en Salesforce:</strong>
+      {{ comparisonResult.salesforce.price | number : "1.4-4" }}
+    </p>
+    <p>
+      <strong>Última Actualización:</strong>
+      {{ comparisonResult.lastUpdated | date : "short" }}
+    </p>
+    <p><strong>Estado:</strong> {{ comparisonResult.status }}</p>
+  </div>
+</div>
