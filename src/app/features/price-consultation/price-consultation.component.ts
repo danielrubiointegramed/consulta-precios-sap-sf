@@ -21,6 +21,7 @@ export class PriceConsultationComponent {
       itemCode: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')]], // Solo alfanumérico
       priceList: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Entero
       newPrice: ['', [Validators.required, Validators.pattern('^[0-9]+(\\.[0-9]{1,4})?$')]], // Hasta 4 decimales
+      environment: ['LIVE'], // Valor por defecto
     });
   }
 

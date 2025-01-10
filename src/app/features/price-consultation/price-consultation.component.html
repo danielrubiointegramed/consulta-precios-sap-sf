@@ -69,6 +69,12 @@
         Actualizar Precio en Salesforce
       </button>
     </div>
+      <!-- Campo oculto -->
+      <input type="hidden" formControlName="environment" />
+
+      <button class="container__button" type="submit" [disabled]="priceForm.invalid">
+        Buscar
+      </button>
   </form>
 
   <div *ngIf="loading" class="loading">Cargando...</div>
