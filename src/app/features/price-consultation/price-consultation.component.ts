@@ -103,7 +103,7 @@ export class PriceConsultationComponent {
 
   isSynchronized(): boolean {
     if (!this.comparisonResult) {
-      return false; // Si no hay comparación, permite actualización
+      return false;
     }
     return (
       this.comparisonResult.sap.price === this.comparisonResult.salesforce.price

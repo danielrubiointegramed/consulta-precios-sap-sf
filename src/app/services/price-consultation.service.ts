@@ -45,7 +45,6 @@ export class PriceConsultationService {
     );
   }
 
-
   /**
    * Maneja errores HTTP de forma centralizada
    * @param error Error HTTP recibido

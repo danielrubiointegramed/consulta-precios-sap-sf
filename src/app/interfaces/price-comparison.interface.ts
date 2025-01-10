@@ -1,13 +1,13 @@
 export interface PriceComparison {
-  itemCode: string; // Código del artículo
-  itemName: string; // Nombre del artículo
-  priceList: number; // Lista de precios
+  itemCode: string;
+  itemName: string;
+  priceList: number;
   sap: {
-    price: string; // Precio en SAP
+    price: string;
   };
   salesforce: {
-    price: string; // Precio en Salesforce
+    price: string;
   };
-  lastUpdated: string; // Fecha de última modificación
-  status: string; // Sincronizado o Desactualizado
+  lastUpdated: string;
+  status: string;
 }

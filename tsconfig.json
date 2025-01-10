@@ -9,7 +9,7 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node", // Cambiado de "bundler" a "node"
+    "moduleResolution": "node",
     "module": "es2020",
     "target": "es2020",
     "typeRoots": ["node_modules/@types"],
