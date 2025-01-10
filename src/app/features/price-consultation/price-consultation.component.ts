@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceConsultationService } from '../../services/price-consultation.service';
 import { PriceComparison } from 'src/app/interfaces/price-comparison.interface';
 import { UpdateResponse } from 'src/app/interfaces/update-response.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'price-consultation',
@@ -23,19 +24,20 @@ export class PriceConsultationComponent {
     });
   }
 
-  /**
-   * Consultar precios entre SAP y Salesforce
-   */
   onConsult(): void {
     if (this.priceForm.invalid) {
       this.error = 'Por favor, completa todos los campos correctamente.';
       return;
     }
 
-    this.setLoadingState(true);
-    const { itemCode, itemName, priceList } = this.priceForm.value;
+    const { itemCode, priceList } = this.priceForm.value;
 
-    this.service.getPriceComparison(itemCode, itemName, priceList).subscribe({
+    // Verifica los datos enviados
+    console.log('Datos enviados al servicio de comparación:', { itemCode, priceList });
+
+    this.setLoadingState(true);
+
+    this.service.getPriceComparison(itemCode, priceList).subscribe({
       next: (result: PriceComparison) => {
         this.comparisonResult = result;
         this.error = null;
@@ -47,9 +49,7 @@ export class PriceConsultationComponent {
     });
   }
 
-  /**
-   * Actualizar el job del webservice
-   */
+
   onUpdateJob(): void {
     if (this.priceForm.invalid || !this.comparisonResult) {
       this.error = 'Por favor, completa todos los campos correctamente o realiza una consulta primero.';
@@ -57,17 +57,21 @@ export class PriceConsultationComponent {
     }
 
     this.setLoadingState(true);
-    const { itemCode, itemName, priceList, newPrice } = this.priceForm.value;
+    const { itemCode, priceList, newPrice } = this.priceForm.value;
 
-    this.service.updateJob(itemCode, itemName, priceList, newPrice).subscribe({
+    console.log('Datos enviados al servicio de actualización:', { itemCode, priceList, newPrice });
+
+    this.service.updateJob(itemCode, priceList, newPrice).subscribe({
       next: (response: UpdateResponse) => {
         console.log('Respuesta del servidor:', response);
-        if (response.updated) {
+        if (response.success) {
           this.comparisonResult = {
             ...this.comparisonResult!,
-            salesforce: { price: response.newPrice },
+            salesforce: { price: newPrice },
           };
           this.error = null;
+        } else {
+          this.error = `Errores: ${response.errors.join(', ')}`;
         }
         this.setLoadingState(false);
       },
@@ -77,28 +81,18 @@ export class PriceConsultationComponent {
     });
   }
 
-  /**
-   * Verificar si los precios están sincronizados
-   */
+
   isSynchronized(): boolean {
     return this.comparisonResult?.status === 'Sincronizado' || false;
   }
 
-  /**
-   * Manejo de errores centralizado
-   * @param error Error recibido
-   * @param context Contexto del error
-   */
   private handleError(error: unknown, context: string): void {
     console.error(`${context}:`, error);
-    this.error = (error as Error).message || `Ocurrió un error inesperado: ${context}`;
+    this.error = (error as HttpErrorResponse).error?.message || `Ocurrió un error inesperado: ${context}`;
     this.setLoadingState(false);
   }
 
-  /**
-   * Establece el estado de carga
-   * @param isLoading Estado de carga
-   */
+
   private setLoadingState(isLoading: boolean): void {
     this.loading = isLoading;
   }
