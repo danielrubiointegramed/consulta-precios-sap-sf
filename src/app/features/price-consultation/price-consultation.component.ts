@@ -16,12 +16,21 @@ export class PriceConsultationComponent {
   error: string | null = null;
   comparisonResult: PriceComparison | null = null;
 
-  constructor(private fb: FormBuilder, private service: PriceConsultationService) {
+  constructor(
+    private fb: FormBuilder,
+    private service: PriceConsultationService
+  ) {
     this.priceForm = this.fb.group({
-      itemCode: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')]], // Solo alfanumérico
-      priceList: ['', [Validators.required, Validators.pattern('^[0-9]+$')]], // Entero
-      newPrice: ['', [Validators.required, Validators.pattern('^[0-9]+(\\.[0-9]{1,4})?$')]], // Hasta 4 decimales
-      environment: ['LIVE'], // Valor por defecto
+      itemCode: [
+        '',
+        [Validators.required, Validators.pattern('^[a-zA-Z0-9/\\-_.\\s]+$')],
+      ],
+      priceList: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      newPrice: [
+        '',
+        [Validators.required, Validators.pattern('^[0-9]+(\\.[0-9]{1,4})?$')],
+      ],
+      environment: ['LIVE'],
     });
   }
 
@@ -33,38 +42,47 @@ export class PriceConsultationComponent {
 
     const { itemCode, priceList } = this.priceForm.value;
 
-    // Verifica los datos enviados
-    console.log('Datos enviados al servicio de comparación:', { itemCode, priceList });
-
-    this.setLoadingState(true);
-
     this.service.getPriceComparison(itemCode, priceList).subscribe({
       next: (result: PriceComparison) => {
-        this.comparisonResult = result;
-        this.error = null;
+        console.log('Resultado de comparación:', result);
+
+        // Validar propiedades correctamente
+        if (result && result.sap?.price && result.salesforce?.price) {
+          this.comparisonResult = result;
+          this.error = null;
+        } else {
+          this.error = 'El resultado de la comparación no es válido.';
+          this.comparisonResult = null;
+        }
         this.setLoadingState(false);
       },
       error: (err) => {
         this.handleError(err, 'Error al consultar precios');
       },
     });
+    console.log('Valor de Item Code:', this.priceForm.get('itemCode')?.value);
   }
-
 
   onUpdateJob(): void {
     if (this.priceForm.invalid || !this.comparisonResult) {
-      this.error = 'Por favor, completa todos los campos correctamente o realiza una consulta primero.';
+      this.error = 'Por favor, realiza una consulta antes de actualizar el precio.';
       return;
     }
 
-    this.setLoadingState(true);
     const { itemCode, priceList, newPrice } = this.priceForm.value;
 
-    console.log('Datos enviados al servicio de actualización:', { itemCode, priceList, newPrice });
+    console.log('Datos enviados al servicio de actualización:', {
+      itemCode,
+      priceList,
+      newPrice,
+    });
+
+    this.setLoadingState(true);
 
     this.service.updateJob(itemCode, priceList, newPrice).subscribe({
       next: (response: UpdateResponse) => {
         console.log('Respuesta del servidor:', response);
+
         if (response.success) {
           this.comparisonResult = {
             ...this.comparisonResult!,
@@ -84,15 +102,21 @@ export class PriceConsultationComponent {
 
 
   isSynchronized(): boolean {
-    return this.comparisonResult?.status === 'Sincronizado' || false;
+    if (!this.comparisonResult) {
+      return false; // Si no hay comparación, permite actualización
+    }
+    return (
+      this.comparisonResult.sap.price === this.comparisonResult.salesforce.price
+    );
   }
 
   private handleError(error: unknown, context: string): void {
     console.error(`${context}:`, error);
-    this.error = (error as HttpErrorResponse).error?.message || `Ocurrió un error inesperado: ${context}`;
+    this.error =
+      (error as HttpErrorResponse).error?.message ||
+      `Ocurrió un error inesperado: ${context}`;
     this.setLoadingState(false);
   }
-
 
   private setLoadingState(isLoading: boolean): void {
     this.loading = isLoading;

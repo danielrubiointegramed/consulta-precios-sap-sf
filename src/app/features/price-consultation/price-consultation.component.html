@@ -72,28 +72,28 @@
       <!-- Campo oculto -->
       <input type="hidden" formControlName="environment" />
 
-      <button class="container__button" type="submit" [disabled]="priceForm.invalid">
-        Buscar
-      </button>
   </form>
 
   <div *ngIf="loading" class="loading">Cargando...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
   <div *ngIf="comparisonResult" class="success">
     <h3>Resultado:</h3>
-    <p><strong>Artículo:</strong> {{ comparisonResult.itemCode }}</p>
+    <p><strong>Artículo:</strong> {{ comparisonResult?.itemCode || 'N/A' }}</p>
+    <p><strong>Nombre del Artículo:</strong> {{ comparisonResult?.itemName || 'N/A' }}</p>
+    <p><strong>Lista de Precios:</strong> {{ comparisonResult?.priceList || 'N/A' }}</p>
     <p>
       <strong>Precio en SAP:</strong>
-      {{ comparisonResult.sap.price | number : "1.4-4" }}
+      {{ comparisonResult?.sap?.price ? (comparisonResult.sap.price | number : "1.4-4") : 'N/A' }}
     </p>
     <p>
       <strong>Precio en Salesforce:</strong>
-      {{ comparisonResult.salesforce.price | number : "1.4-4" }}
+      {{ comparisonResult?.salesforce?.price ? (comparisonResult.salesforce.price | number : "1.4-4") : 'N/A' }}
     </p>
     <p>
       <strong>Última Actualización:</strong>
-      {{ comparisonResult.lastUpdated | date : "short" }}
+      {{ comparisonResult?.lastUpdated ? (comparisonResult.lastUpdated | date : "short") : 'N/A' }}
     </p>
-    <p><strong>Estado:</strong> {{ comparisonResult.status }}</p>
+    <p><strong>Estado:</strong> {{ comparisonResult?.status || 'N/A' }}</p>
   </div>
+
 </div>
